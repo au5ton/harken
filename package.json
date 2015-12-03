@@ -1,0 +1,11 @@
+{
+  "name": "harken",
+  "version": "1.0.0",
+  "description": "Automatically listen to the SOTD on FW",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-ffprobe": "^1.2.2",
+    "thepiratebay": "^0.2.5"
+  }
+}
