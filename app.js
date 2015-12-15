@@ -1,8 +1,8 @@
 var fw = require('./fw');
 
 
-var listenCount = 1;
-var listenLimit = 9; //Daily limit imposed by Fluff
+var listenCount = 0;
+var listenLimit = 10; //Daily limit imposed by Fluff
 var songLength = 238192;
 function recursive() {
     console.log('Listening iteration: '+listenCount);

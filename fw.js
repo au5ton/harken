@@ -4,6 +4,7 @@ var constants = require('./constants'); //Not included in source control for sec
 
 var fs = require('fs');
 var http = require('http');
+var https = require('https');
 var querystring = require('querystring');
 var probe = require('node-ffprobe');
 
@@ -19,7 +20,7 @@ FW.authenticate = function(callback) {
 
     console.log('Attempting to authenticate with cookie '+constants.cookie);
 
-    var req = http.request({
+    var req = https.request({
         hostname: constants.host,
         path: '/home.php',
         method: 'GET',
@@ -52,7 +53,7 @@ FW.authenticate = function(callback) {
 
 var d = new Date();
 
-FW.currentDate = d.getDate()+"-"+d.getMonth()+"-"+d.getFullYear();
+FW.currentDate = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
 FW.downloadedSong = 'SOTD-'+FW.currentDate+'.mp3';
 
 FW.downloadSong = function(callback) {
@@ -65,7 +66,7 @@ FW.downloadSong = function(callback) {
 
     var err;
 
-    var req = http.request({
+    var req = https.request({
         hostname: constants.host,
         path: '/song_download.php',
         method: 'GET',
@@ -113,7 +114,7 @@ FW.startListening = function(callback) {
         callback = function() {};
     }
 
-    var req = http.request({
+    var req = https.request({
         hostname: constants.host,
         path: '/song.php',
         method: 'GET',
@@ -144,7 +145,7 @@ FW.redeemPoints = function(callback) {
         'checktime': 'Redeem Points'
     });
 
-    var req = http.request({
+    var req = https.request({
         hostname: constants.host,
         path: '/song.php',
         method: 'POST',
