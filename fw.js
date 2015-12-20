@@ -59,7 +59,7 @@ FW.downloadedSong = 'SOTD-'+FW.currentDate+'.mp3';
 FW.downloadSong = function(callback) {
 
     fs.mkdir('sotd', function(){
-        var file = fs.createWriteStream('sotd/SOTD-'+FW.currentDate+'.mp3');
+        var file = fs.createWriteStream('sotd/'+FW.downloadedSong);
 
         if(callback === undefined) {
             callback = function() {};
@@ -104,7 +104,7 @@ FW.getSongLength = function(callback) {
         callback = function() {};
     }
 
-    probe(__dirname+'/'+FW.downloadedSong, function(err, probeData) {
+    probe(__dirname+'/sotd/'+FW.downloadedSong, function(err, probeData) {
         if(err) throw err;
         callback(parseInt(probeData.streams[0]['duration'] * 1000));
     });
