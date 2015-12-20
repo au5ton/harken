@@ -53,12 +53,12 @@ FW.authenticate = function(callback) {
 
 var d = new Date();
 
-FW.currentDate = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
+FW.currentDate = (d.getMonth()+1)+'-'+d.getDate()+'-'+d.getFullYear();
 FW.downloadedSong = 'SOTD-'+FW.currentDate+'.mp3';
 
 FW.downloadSong = function(callback) {
 
-    var file = fs.createWriteStream('SOTD-'+FW.currentDate+'.mp3');
+    var file = fs.createWriteStream('sotd/SOTD-'+FW.currentDate+'.mp3');
 
     if(callback === undefined) {
         callback = function() {};
