@@ -58,41 +58,44 @@ FW.downloadedSong = 'SOTD-'+FW.currentDate+'.mp3';
 
 FW.downloadSong = function(callback) {
 
-    var file = fs.createWriteStream('sotd/SOTD-'+FW.currentDate+'.mp3');
+    fs.mkdir('sotd', function(){
+        var file = fs.createWriteStream('sotd/SOTD-'+FW.currentDate+'.mp3');
 
-    if(callback === undefined) {
-        callback = function() {};
-    }
-
-    var err;
-
-    var req = https.request({
-        hostname: constants.host,
-        path: '/song_download.php',
-        method: 'GET',
-        headers: {
-            'Cookie': constants.cookie
+        if(callback === undefined) {
+            callback = function() {};
         }
-    }, function(res) {
-        res.pipe(file);
 
-        if(res.statusCode === 200) {
-            console.log('✅ downloadSong');
-        }
-        else {
-            console.log('⚠️ downloadSong');
-            err = 'failed';
-        }
-        //console.log('STATUS: ' + res.statusCode);
-        //console.log('HEADERS: ' + JSON.stringify(res.headers));
-        res.on('end', function() {
-            callback(err);
+        var err;
+
+        var req = https.request({
+            hostname: constants.host,
+            path: '/song_download.php',
+            method: 'GET',
+            headers: {
+                'Cookie': constants.cookie
+            }
+        }, function(res) {
+            res.pipe(file);
+
+            if(res.statusCode === 200) {
+                console.log('✅ downloadSong');
+            }
+            else {
+                console.log('⚠️ downloadSong');
+                err = 'failed';
+            }
+            //console.log('STATUS: ' + res.statusCode);
+            //console.log('HEADERS: ' + JSON.stringify(res.headers));
+            res.on('end', function() {
+                callback(err);
+            });
         });
+        req.on('error', function(e) {
+            console.log('problem with request: ' + e.message);
+        });
+        req.end();
     });
-    req.on('error', function(e) {
-        console.log('problem with request: ' + e.message);
-    });
-    req.end();
+
 };
 
 FW.getSongLength = function(callback) {
