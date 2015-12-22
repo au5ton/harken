@@ -13,7 +13,7 @@ function recursive() {
             console.log('    Attempting to redeem points');
             fw.redeemPoints(function(){
                 listenCount++;
-                if(listenCount <= listenLimit) {
+                if(listenCount < listenLimit) {
                     recursive();
                 }
             });
