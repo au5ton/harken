@@ -1,5 +1,5 @@
 var fw = require('./fw');
-
+var fs = require('fs');
 
 var listenCount = 0;
 var listenLimit = 10; //Daily limit imposed by Fluff
@@ -36,6 +36,19 @@ else if(process.argv[2] === '--skipDownload'){
             songLength = length;
             console.log('Song length, in milliseconds: '+songLength);
             recursive();
+        });
+    });
+}
+else if(process.argv[2] === '--useBashScript'){
+    fw.authenticate(function() {
+        console.log('--useBashScript specified, song already downloaded in temp.mp3');
+        fs.rename('temp.mp3','sotd/'+fw.downloadedSong, function(){
+            console.log('Song renamed as: '+'sotd/'+fw.downloadedSong);
+            fw.getSongLength(function(length) {
+                songLength = length;
+                console.log('Song length, in milliseconds: '+songLength);
+                recursive();
+            });
         });
     });
 }
