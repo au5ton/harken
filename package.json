@@ -2,10 +2,15 @@
   "name": "harken",
   "version": "1.0.0",
   "description": "Automatically listen to the SOTD on FW",
+  "description": "console.log() is too boring for me",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/au5ton/harken.git"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "node-ffprobe": "^1.2.2",
-    "thepiratebay": "^0.2.5"
+    "au5ton-logger": "^1.1.2",
+    "fwapi": "^0.3.1"
   }
 }

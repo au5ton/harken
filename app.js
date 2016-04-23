@@ -1,67 +1,70 @@
-var fw = require('./fw');
+'use strict';
+
+var api = require('fwapi');
+var client = require('au5ton-logger');
 var fs = require('fs');
 
-var listenCount = 0;
-var listenLimit = 10; //Daily limit imposed by Fluff
-var songLength = 238192;
-function recursive() {
-    console.log('Listening iteration: '+listenCount);
-    fw.startListening(function(){
-        console.log('    Listening request done.');
+let listenCount = 0;
+let listenLimit = 10; //Daily limit imposed by Fluff
+let songLength = 1000;
+
+let fileName = '';
+
+const login = {
+    user: process.argv[2],
+    pass: process.argv[3]
+};
+
+if(process.argv[4] === '--downloadSong') {
+    api.auth.authenticate(login.user, login.pass, function(status){
+        if(status === 'success') {
+            api.song.setCookie(api.auth.cookie);
+            api.song.downloadSong({
+                path: 'sotd'
+            }, function(status) {
+                if(status.status === 'success') {
+                    fileName = api.song.lastDownloadedSong;
+                }
+            });
+        }
+
+    },true);
+}
+else {
+    api.auth.authenticate(login.user, login.pass, function(status){
+        if(status === 'success') {
+            api.song.setCookie(api.auth.cookie);
+            api.song.downloadSong({
+                path: 'sotd'
+            }, function(status) {
+                if(status.status === 'success') {
+                    fileName = api.song.lastDownloadedSong;
+
+                    api.song.getSongLength(fileName, function(length) {
+                        client.success('Song length is: ', length, 'ms');
+                        songLength = length;
+                        recur();
+                    });
+
+                }
+            });
+        }
+
+    },true);
+}
+
+let recur = function() {
+    client.log('Listening iteration: ',listenCount);
+    api.song.startListening(function(){
         setTimeout(function(){
-            console.log('    Song duration has passed!');
-            console.log('    Attempting to redeem points');
-            fw.redeemPoints(function(){
+            client.log('    Song duration has passed!');
+            client.log('    Attempting to redeem points');
+            api.song.redeemPoints(function(status){
                 listenCount++;
                 if(listenCount < listenLimit) {
-                    recursive();
+                    recur();
                 }
             });
         },songLength+2000);
     });
-}
-
-if(process.argv[2] === '--downloadSong') {
-    fw.authenticate(function() {
-        console.log('Song download started.');
-        fw.downloadSong(function(){
-            console.log('Song downloaded');
-        });
-    });
-}
-else if(process.argv[2] === '--skipDownload'){
-    fw.authenticate(function() {
-        console.log('--skipDownload specified, song already downloaded.');
-        fw.getSongLength(function(length) {
-            songLength = length;
-            console.log('Song length, in milliseconds: '+songLength);
-            recursive();
-        });
-    });
-}
-else if(process.argv[2] === '--useBashScript'){
-    fw.authenticate(function() {
-        console.log('--useBashScript specified, song already downloaded in temp.mp3');
-        fs.rename('temp.mp3','sotd/'+fw.downloadedSong, function(){
-            console.log('Song renamed as: '+'sotd/'+fw.downloadedSong);
-            fw.getSongLength(function(length) {
-                songLength = length;
-                console.log('Song length, in milliseconds: '+songLength);
-                recursive();
-            });
-        });
-    });
-}
-else {
-    fw.authenticate(function() {
-        console.log('Song download started.');
-        fw.downloadSong(function(){
-            console.log('Song downloaded');
-            fw.getSongLength(function(length) {
-                songLength = length;
-                console.log('Song length, in milliseconds: '+songLength);
-                recursive();
-            });
-        });
-    });
-}
+};
