@@ -20,7 +20,7 @@ if(process.argv[4] === '--downloadSong') {
         if(status === 'success') {
             api.song.setCookie(api.auth.cookie);
             api.song.downloadSong({
-                path: 'sotd'
+                path: '/Users/austin/Desktop/sotd'
             }, function(status) {
                 if(status.status === 'success') {
                     fileName = api.song.lastDownloadedSong;
@@ -35,7 +35,7 @@ else {
         if(status === 'success') {
             api.song.setCookie(api.auth.cookie);
             api.song.downloadSong({
-                path: 'sotd'
+                path: '/Users/austin/Desktop/sotd'
             }, function(status) {
                 if(status.status === 'success') {
                     fileName = api.song.lastDownloadedSong;
